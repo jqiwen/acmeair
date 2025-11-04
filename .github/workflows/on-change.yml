@@ -1,0 +1,39 @@
+name: Deploy to IBM Cloud OpenShift
+on:
+  push:
+    paths:
+      - "**/*.yml"
+      - "**/*.yaml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 1: 安装 IBM Cloud CLI
+      - name: Install IBM Cloud CLI
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ibmcloud --version
+
+      # Step 2: 登录 IBM Cloud 并配置 OpenShift
+      - name: Login to IBM Cloud & Configure OpenShift
+        env:
+          IBM_API_KEY: ${{ secrets.IBM_API_KEY }}         # 你需要在 GitHub Secrets 里加这个 key
+          REGION: ca-tor                                  # 你的 region（比如 ca-tor）
+          RESOURCE_GROUP: Default                         # 或者 acmeair-group11 的资源组名
+          CLUSTER_NAME: c104-e                            # 你集群的名字（部分可以从 oc login 信息中看到）
+        run: |
+          ibmcloud login --apikey "$IBM_API_KEY" -r "$REGION" -g "$RESOURCE_GROUP"
+          ibmcloud oc cluster config -c "$CLUSTER_NAME" --admin
+          oc project acmeair-group11
+
+      # Step 3: 执行你项目的部署脚本
+      - name: Build and Deploy to OpenShift
+        run: |
+          cd acmeair-mainservice-java/scripts
+          chmod +x buildAndDeployToOpenShiftNew.sh
+          ./buildAndDeployToOpenShiftNew.sh

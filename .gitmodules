@@ -1,0 +1,3 @@
+[submodule "acmeair-authservice-java"]
+	path = acmeair-authservice-java
+	url = https://github.com/jqiwen/acmeair-authservice-java.git
