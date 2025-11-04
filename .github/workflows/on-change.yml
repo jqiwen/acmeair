@@ -19,6 +19,15 @@ jobs:
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
           ibmcloud --version
 
+      
+      # 安装 OpenShift CLI (oc)
+      - name: Install OpenShift CLI (oc)
+        run: |
+          curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc kubectl /usr/local/bin/
+          oc version --client
+
       # Step 2: 登录 IBM Cloud 并配置 OpenShift
       - name: Login to IBM Cloud & Configure OpenShift
         env:
@@ -27,7 +36,7 @@ jobs:
           RESOURCE_GROUP: ${{ vars.IBM_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ vars.IBM_CLUSTER }}
         run: |
-          oc login --token=sha256~Mn1xXKs45wq-EgfzSWVjDH8P5XFk3jyw9HSFXnxf6ds --server=https://c104-e.ca-tor.containers.cloud.ibm.com:30689
+          oc login --token="$OPENSHIFT_TOKEN" --server="$OPENSHIFT_SERVER"
           oc project acmeair-group11
 
 
@@ -35,6 +44,7 @@ jobs:
       - name: Build and Deploy to OpenShift
         run: |
           cd acmeair/acmeair-mainservice-java/scripts
+          chmod +x buildAndDeployToOpenShiftNew.sh
           ./buildAndDeployToOpenShiftNew.sh
 
 
