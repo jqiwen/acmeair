@@ -1,3 +1,15 @@
 [submodule "acmeair-authservice-java"]
 	path = acmeair-authservice-java
 	url = https://github.com/jqiwen/acmeair-authservice-java.git
+[submodule "acmeair-bookingservice-java"]
+	path = acmeair-bookingservice-java
+	url = https://github.com/jqiwen/acmeair-bookingservice-java.git
+[submodule "acmeair-customerservice-java"]
+	path = acmeair-customerservice-java
+	url = https://github.com/jqiwen/acmeair-customerservice-java.git
+[submodule "acmeair-flightservice-java"]
+	path = acmeair-flightservice-java
+	url = https://github.com/jqiwen/acmeair-flightservice-java.git
+[submodule "acmeair-mainservice-java"]
+	path = acmeair-mainservice-java
+	url = https://github.com/jqiwen/acmeair-mainservice-java.git
