@@ -1,50 +1,59 @@
 name: Deploy to IBM Cloud OpenShift
+
 on:
   push:
     paths:
       - "**/*.yml"
       - "**/*.yaml"
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      # 1) 拉代码 + 子模块
+      - name: Checkout repository (with submodules)
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
-      # Step 1: 安装 IBM Cloud CLI
-      - name: Install IBM Cloud CLI
-        run: |
-          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-          ibmcloud --version
-
-      
-      # 安装 OpenShift CLI (oc)
+      # 2) 安装 OpenShift CLI
       - name: Install OpenShift CLI (oc)
         run: |
+          set -e
           curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
           tar -xzf openshift-client-linux.tar.gz
           sudo mv oc kubectl /usr/local/bin/
           oc version --client
 
-      # Step 2: 登录 IBM Cloud 并配置 OpenShift
-      - name: Login to IBM Cloud & Configure OpenShift
+      # 3) 用 token + server 直接 oc login
+      - name: Login to OpenShift
         env:
-          IBM_API_KEY: ${{ secrets.IBM_API_KEY }}
-          REGION: ${{ vars.IBM_REGION }}
-          RESOURCE_GROUP: ${{ vars.IBM_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ vars.IBM_CLUSTER }}
+          OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+          OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
         run: |
-          oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
+          set -e
+          test -n "$OPENSHIFT_TOKEN" || (echo "OPENSHIFT_TOKEN missing" && exit 1)
+          test -n "$OPENSHIFT_SERVER" || (echo "OPENSHIFT_SERVER missing" && exit 1)
+          oc login --token="$OPENSHIFT_TOKEN" --server="$OPENSHIFT_SERVER"
+          oc whoami
           oc project acmeair-group11
 
-
-      # Step 3: 执行你项目的部署脚本
-      - name: Build and Deploy to OpenShift
+      # 4) 可选：打印一下目录帮助确认路径
+      - name: Show tree (debug)
         run: |
-          cd acmeair-mainservice-java/scripts
-          chmod +x buildAndDeployToOpenShiftNew.sh
-          ./buildAndDeployToOpenShiftNew.sh
+          pwd
+          ls -la
+          ls -la acmeair-mainservice-java || true
+          ls -la acmeair-mainservice-java/scripts || true
+          find . -maxdepth 3 -name "buildAndDeployToOpenShiftNew.sh" || true
 
-
+      # 5) 执行部署脚本（注意：这里用 working-directory）
+      - name: Build and Deploy to OpenShift
+        working-directory: acmeair-mainservice-java/scripts
+        run: |
+          set -e
+          chmod +x buildAndDeployToOpenShiftNew.sh || true
+          bash ./buildAndDeployToOpenShiftNew.sh
