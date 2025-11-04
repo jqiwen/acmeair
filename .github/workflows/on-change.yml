@@ -54,6 +54,7 @@ jobs:
       - name: Build and Deploy to OpenShift
         working-directory: acmeair-mainservice-java/scripts
         run: |
+          cd acmeair-mainservice-java/scripts
           set -e
-          chmod +x buildAndDeployToOpenShiftNew.sh || true
-          bash ./buildAndDeployToOpenShiftNew.sh
+          chmod +x buildAndDeployToOpenshiftNew.sh || true
+          bash ./buildAndDeployToOpenshiftNew.sh
