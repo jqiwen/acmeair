@@ -34,7 +34,7 @@ jobs:
       # Step 3: 执行你项目的部署脚本
       - name: Build and Deploy to OpenShift
         run: |
-          cd acmeair-mainservice-java/scripts
+          cd acmeair/acmeair-mainservice-java/scripts
           chmod +x buildAndDeployToOpenShiftNew.sh
           ./buildAndDeployToOpenShiftNew.sh
 
