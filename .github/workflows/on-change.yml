@@ -27,7 +27,7 @@ jobs:
           RESOURCE_GROUP: ${{ vars.IBM_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ vars.IBM_CLUSTER }}
         run: |
-          oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
+          oc login --token=sha256~Mn1xXKs45wq-EgfzSWVjDH8P5XFk3jyw9HSFXnxf6ds --server=https://c104-e.ca-tor.containers.cloud.ibm.com:30689
           oc project acmeair-group11
 
 
