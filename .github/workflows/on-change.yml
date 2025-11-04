@@ -1,10 +1,12 @@
 name: Deploy to IBM Cloud OpenShift
 
 on:
-  push:
-    paths:
-      - "**/*.yml"
-      - "**/*.yaml"
+  # push:
+  #   paths:
+  #     - "**/*.yml"
+  #     - "**/*.yaml"
+  repository_dispatch:
+    types: [submodule-yaml-changed]   # 只接收这个类型的事件
   workflow_dispatch:
 
 jobs:
