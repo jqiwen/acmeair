@@ -27,9 +27,7 @@ jobs:
           RESOURCE_GROUP: ${{ vars.IBM_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ vars.IBM_CLUSTER }}
         run: |
-          ibmcloud login --apikey "$IBM_API_KEY" -r "$REGION" -g "$RESOURCE_GROUP"
-          ibmcloud plugin install oc -f
-          ibmcloud oc cluster config -c "$CLUSTER_NAME" --admin
+          oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
           oc project acmeair-group11
 
 
