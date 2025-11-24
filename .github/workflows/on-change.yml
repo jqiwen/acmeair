@@ -46,35 +46,3 @@ jobs:
           set -e
           chmod +x buildAndDeployToOpenshiftNew.sh
           bash ./buildAndDeployToOpenshiftNew.sh
-
-
-
-      # # 3) 用 token + server 直接 oc login
-      # - name: Login to OpenShift
-      #   env:
-      #     OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
-      #     OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-      #   run: |
-      #     set -e
-      #     test -n "$OPENSHIFT_TOKEN" || (echo "OPENSHIFT_TOKEN missing" && exit 1)
-      #     test -n "$OPENSHIFT_SERVER" || (echo "OPENSHIFT_SERVER missing" && exit 1)
-      #     oc login --token="$OPENSHIFT_TOKEN" --server="$OPENSHIFT_SERVER"
-      #     oc whoami
-      #     oc project acmeair-group11
-
-      # # 4) 可选：打印一下目录帮助确认路径
-      # - name: Show tree (debug)
-      #   run: |
-      #     pwd
-      #     ls -la
-      #     ls -la acmeair-mainservice-java || true
-      #     ls -la acmeair-mainservice-java/scripts || true
-      #     find . -maxdepth 3 -name "buildAndDeployToOpenshiftNew.sh" || true
-
-      # # 5) 执行部署脚本（注意：这里用 working-directory）
-      # - name: Build and Deploy to OpenShift
-      #   working-directory: acmeair-mainservice-java/scripts
-      #   run: |
-      #     set -e
-      #     chmod +x buildAndDeployToOpenshiftNew.sh || true
-      #     bash ./buildAndDeployToOpenshiftNew.sh
